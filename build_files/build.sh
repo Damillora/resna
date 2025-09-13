@@ -4,6 +4,9 @@ set -ouex pipefail
 
 ### Install packages
 
+# Install dnf plugins
+dnf -y install dnf5-plugins
+
 # ZSH is Damillora's main shell
 dnf5 -y install zsh
 
