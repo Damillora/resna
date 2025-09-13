@@ -28,3 +28,7 @@ dnf5 -y install python3
 # Disable COPRs so they don't end up enabled on the final image:
 # dnf5 -y copr disable ublue-os/staging
 
+# Tweak os-release
+sed -i '/^PRETTY_NAME/s/"$/ (Resna Core)"/' /usr/lib/os-release
+sed -i 's|^VARIANT_ID=.*|VARIANT_ID=damillora-resna|' /usr/lib/os-release
+sed -i 's|^VARIANT=.*|VARIANT="Resna Core"|' /usr/lib/os-release
