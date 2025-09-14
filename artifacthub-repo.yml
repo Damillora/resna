@@ -2,7 +2,7 @@
 # Sign up and add the Repository ID to the right field. Owners fields are optional.
 # Examples: https://artifacthub.io/packages/search?ts_query_web=ublue&sort=relevance&page=1 
 
-repositoryID: damillora-castorice # Fill in with your own credentials
+repositoryID: f51955c1-84f7-4240-8186-6b45cc0efd59
 owners: # (optional, used to claim repository ownership)
   - name: Damillora
     email: damillora@damillora.com
