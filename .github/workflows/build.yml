@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_DESC: "Damillora's Reusable system (for) network appliances"
+  IMAGE_DESC: "Damillora's Reusable system (for) networked appliances"
   IMAGE_KEYWORDS: "bootc"
   IMAGE_LOGO_URL: "https://avatars.githubusercontent.com/u/5674601?v=4"  # Put your own image here for a fancy profile on https://artifacthub.io/!
   IMAGE_NAME: "${{ github.event.repository.name }}"  # output image name, usually same as repo name
