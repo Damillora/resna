@@ -1,0 +1,3 @@
+docker:
+  ghcr.io/damillora/resna:
+    use-sigstore-attachments: true
