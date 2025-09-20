@@ -6,6 +6,14 @@
 
   "rebaseWhen": "never",
 
+  "customDatasources": {
+    "coreos": {
+      "defaultRegistryUrlTemplate": "https://builds.coreos.fedoraproject.org/streams/stable.json",
+      "transformTemplates": [
+        "{ \"releases\" : [ { \"version\": $$.(architectures.x86_64.artifacts.metal.release) }] }"
+      ]
+    }
+  },
   "packageRules": [
     {
       "automerge": true,
@@ -17,5 +25,15 @@
       "matchDepTypes": ["container"],
       "matchFileNames": [".github/workflows/**.yaml", ".github/workflows/**.yml"],
     },
+    {
+      "enabled": true,
+      "matchDatasources": ["coreos"],
+      "managerFilePatterns": [
+        "/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/",
+        "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/"
+      ],
+      "matchPackageNames": ["quay.io/fedora/fedora-coreos"],
+      "versioning": "semver"
+    }
   ]
 }
