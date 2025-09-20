@@ -4,7 +4,7 @@ COPY build_files /
 COPY cosign.pub /
 
 # Base Image
-FROM quay.io/fedora/fedora-coreos:42.20250901.3.0
+FROM quay.io/fedora/fedora-coreos:42.20250920.20.0@sha256:e9e21d4e43fb587e33ad7e62941c7f715ebf1c59e502a1b566c316db6de871f6
 
 # Copy needed system files
 COPY system_files /
