@@ -33,7 +33,6 @@
         "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/"
       ],
       "matchPackageNames": ["quay.io/fedora/fedora-coreos"],
-      "versioning": "semver",
       "matchUpdateTypes": ["digest", "pinDigest", "pin"]
     }
   ]
