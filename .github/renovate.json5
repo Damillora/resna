@@ -27,11 +27,6 @@
     },
     {
       "enabled": true,
-      "matchDatasources": ["coreos"],
-      "managerFilePatterns": [
-        "/(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$/",
-        "/(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$/"
-      ],
       "matchPackageNames": ["quay.io/fedora/fedora-coreos"],
       "matchUpdateTypes": ["digest", "pinDigest", "pin"],
       "automerge": true
