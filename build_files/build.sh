@@ -7,9 +7,6 @@ set -ouex pipefail
 # Install dnf plugins
 dnf -y install dnf5-plugins
 
-# ZSH is Damillora's main shell
-dnf5 -y install zsh
-
 # Apparently ZSTD is not included by default
 dnf5 -y install zstd
 
