@@ -152,7 +152,7 @@ jobs:
           # Default tags are "$DEFAULT_TAG" and "$DEFAULT_TAG.$date".
           tags: |
             type=raw,value=${{ matrix.platform }}
-            type=raw,value=${{ steps.rechunk.outputs.version }}.${{ matrix.platform }}
+            type=raw,value=${{ steps.rechunk.outputs.version }}
             type=sha,enable=${{ github.event_name == 'pull_request' }}
             type=ref,event=pr
           sep-tags: " "
