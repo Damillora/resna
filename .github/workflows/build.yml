@@ -106,6 +106,7 @@ jobs:
       # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
       # You can enable it by uncommenting the following lines:
       - name: Run Rechunker
+        if: matrix.platform == 'amd64'
         id: rechunk
         uses: hhd-dev/rechunk@v1.2.3
         with:
