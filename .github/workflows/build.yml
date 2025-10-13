@@ -113,7 +113,7 @@ jobs:
           ref: "evey"
           prev-ref: "${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.platform }}"
           skip_compression: true
-          version: ${{ env.SOURCE_IMAGE_VERSION }}-resna-${{ matrix.platform }}
+          version: ${{ env.SOURCE_IMAGE_VERSION }}-resna.${{ matrix.platform }}
           changelog: |
             # Resna Core <version>
             ## Major package versions
