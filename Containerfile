@@ -1,10 +1,14 @@
+ARG BASE_IMAGE="${BASE_IMAGE}"
+ARG BASE_VERSION="${BASE_VERSION}"
+
+
 # Allow build scripts to be referenced without being copied into the final image
 FROM scratch AS ctx
 COPY build_files /
 COPY cosign.pub /
 
 # Base Image
-FROM quay.io/fedora/fedora-coreos:stable
+FROM ${BASE_IMAGE}:${BASE_VERSION}
 
 # Copy needed system files
 COPY system_files /
@@ -12,7 +16,7 @@ COPY system_files /
 ## Other possible base images include:
 # FROM ghcr.io/ublue-os/bazzite:latest
 # FROM ghcr.io/ublue-os/bluefin-nvidia:stable
-# 
+#
 # ... and so on, here are more base images
 # Universal Blue Images: https://github.com/orgs/ublue-os/packages
 # Fedora base image: quay.io/fedora/fedora-bootc:41
@@ -29,7 +33,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     /ctx/build.sh && \
     /ctx/post-install.sh && \
     /ctx/cleanup.sh
-    
+
 ### LINTING
 ## Verify final image and contents are correct.
 RUN bootc container lint
