@@ -26,7 +26,7 @@ dnf5 -y install python3
 # dnf5 -y copr disable ublue-os/staging
 
 # Tweak os-release
-sed -i '/^PRETTY_NAME/s/ (CoreOS)"$/-resna (Resna Core)\"/' /usr/lib/os-release
+sed -i '/^PRETTY_NAME/s/"$/-resna (Resna Core)\"/' /usr/lib/os-release
 sed -i '/^VERSION/s/ (CoreOS)"$/-resna (Resna Core)"/' /usr/lib/os-release
 sed -i 's|^VARIANT_ID=.*|VARIANT_ID=damillora-resna|' /usr/lib/os-release
 sed -i 's|^VARIANT=.*|VARIANT="Resna Core"|' /usr/lib/os-release
