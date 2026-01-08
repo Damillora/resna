@@ -70,8 +70,16 @@ jobs:
               echo "inspected image version must not be empty or null"
               exit 1
             fi
-            tailscale_ver=$(jq -r '.Labels["org.opencontainers.image.version"]' source.json)
-            echo "SOURCE_IMAGE_VERSION=$ver" >> $GITHUB_ENV
+
+      - name: Get Tailscale version of container
+        id: labels
+        uses: Wandalen/wretry.action@e68c23e6309f2871ca8ae4763e7629b9c258e1ea # v3.8.0
+        with:
+          attempt_limit: 3
+          attempt_delay: 15000
+          command: |
+            set -eo pipefail
+            skopeo inspect docker://${{ env.IMAGE_REGISTRY}}/${{ env.IMAGE_NAME }}:${{ matrix.platform }} > source.json
             ver=$(jq -r '.Labels["com.damillora.resna.version.tailscale"]' source.json)
             if [ ! -z "$ver" ] && [ ! "null" = "$ver" ]; then
               echo "TAILSCALE_VERSION=$ver">> $GITHUB_ENV
@@ -87,7 +95,11 @@ jobs:
         id: check-tag
         with:
           tag: "${{ env.SOURCE_IMAGE_VERSION }}-resna.arm64"
-
+      - name: Print out versions
+        run: |
+          echo "Latest Fedora CoreOS: ${{ env.SOURCE_IMAGE_VERSION }}"
+          echo "Latest tailscale: ${{ steps.tailscale-version.outputs.tag }}"
+          echo "Image tailscale: ${{ env.TAILSCALE_VERSION }}"
       # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
