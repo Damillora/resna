@@ -100,11 +100,12 @@ jobs:
           echo "Latest Fedora CoreOS: ${{ env.SOURCE_IMAGE_VERSION }}"
           echo "Latest tailscale: ${{ steps.tailscale-version.outputs.tag }}"
           echo "Image tailscale: ${{ env.TAILSCALE_VERSION }}"
+          echo "Image update needed:  ${{ steps.check-tag.outputs.exists == 'false' }}"
           echo "Tailscale update needed:  ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}"
       # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
 
       # This is optional, but if you see that your builds are way too big for the runners, you can enable this by uncommenting the following lines:
       # - name: Maximize build space
@@ -113,10 +114,10 @@ jobs:
       #     remove-codeql: true
       - name: Mount BTRFS for podman storage
         uses: ublue-os/container-storage-action@main
-        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
 
       - name: Prepare build args
-        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         run: |
           cat <<'EOF' >>build_args.txt
           BASE_IMAGE=${{ env.BASE_IMAGE }}
@@ -125,7 +126,7 @@ jobs:
           cat build_args.txt >> $GITHUB_OUTPUT
 
       - name: Build Image
-        if: steps.check-tag.outputs.exists == 'false' ||  ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         id: build_image
         run: |
           sudo -E buildah build \
@@ -138,7 +139,7 @@ jobs:
       # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
       # You can enable it by uncommenting the following lines:
       - name: Run Rechunker
-        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         id: rechunk
         uses: hhd-dev/rechunk@v1.2.4
         with:
@@ -179,7 +180,7 @@ jobs:
       # Image metadata for https://artifacthub.io/ - This is optional but is highly recommended so we all can get a index of all the custom images
       # The metadata by itself is not going to do anything, you choose if you want your image to be on ArtifactHub or not.
       - name: Image Metadata
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5
         id: metadata
         with:
@@ -207,7 +208,7 @@ jobs:
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
       - name: Login to GitHub Container Registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -215,7 +216,7 @@ jobs:
 
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         id: push
         env:
           REGISTRY_USER: ${{ github.actor }}
@@ -233,10 +234,10 @@ jobs:
       # to consume. For more details, review the image signing section of the README.
       - name: Install Cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
 
       - name: Sign container image
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         run: |
           IMAGE_FULL="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}"
           for tag in ${{ steps.metadata.outputs.tags }}; do
@@ -248,7 +249,7 @@ jobs:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
 
       - name: Create Release
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION)
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && ${{ steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         uses: softprops/action-gh-release@v2 # v2
         with:
           name: "${{ steps.rechunk.outputs.version }} (Resna Core)"
