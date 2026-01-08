@@ -95,11 +95,12 @@ jobs:
       - uses: mukunku/tag-exists-action@v1.7.0
         id: check-tag
         with:
-          tag: "${{ env.SOURCE_IMAGE_VERSION }}-resna.arm64"
+          tag: "${{ env.SOURCE_IMAGE_VERSION }}-resna.${{ matrix.platform }}"
       - name: Print out versions
         run: |
           echo "Latest Fedora CoreOS: ${{ env.SOURCE_IMAGE_VERSION }}"
           echo "Latest tailscale: ${{ steps.tailscale-version.outputs.tag }}"
+          echo "Image is latest Fedora CoreOS: ${{ steps.check-tag.outputs.exists }}"
           echo "Image tailscale: ${{ env.TAILSCALE_VERSION }}"
       # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
