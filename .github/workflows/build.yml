@@ -103,7 +103,7 @@ jobs:
       # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
 
       # This is optional, but if you see that your builds are way too big for the runners, you can enable this by uncommenting the following lines:
       # - name: Maximize build space
@@ -112,10 +112,10 @@ jobs:
       #     remove-codeql: true
       - name: Mount BTRFS for podman storage
         uses: ublue-os/container-storage-action@main
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
 
       - name: Prepare build args
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         run: |
           cat <<'EOF' >>build_args.txt
           BASE_IMAGE=${{ env.BASE_IMAGE }}
@@ -124,7 +124,7 @@ jobs:
           cat build_args.txt >> $GITHUB_OUTPUT
 
       - name: Build Image
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' ||  ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         id: build_image
         run: |
           sudo -E buildah build \
@@ -137,7 +137,7 @@ jobs:
       # Documentation for Rechunk is provided on their github repository at https://github.com/hhd-dev/rechunk
       # You can enable it by uncommenting the following lines:
       - name: Run Rechunker
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         id: rechunk
         uses: hhd-dev/rechunk@v1.2.4
         with:
@@ -194,7 +194,7 @@ jobs:
 
       # This is necessary so that the podman socket can find the rechunked image on its storage
       - name: Load in podman and tag
-        if: steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION
+        if: steps.check-tag.outputs.exists == 'false' ||  ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }}
         run: |
           IMAGE=$(podman pull ${{ steps.rechunk.outputs.ref }})
           sudo rm -rf ${{ steps.rechunk.outputs.output }}
@@ -206,7 +206,7 @@ jobs:
       # They also check if the runner is on the default branch so that things like the merge queue (if you enable it), are going to work
       - name: Login to GitHub Container Registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION)
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -214,7 +214,7 @@ jobs:
 
       - name: Push To GHCR
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION)
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
         id: push
         env:
           REGISTRY_USER: ${{ github.actor }}
@@ -232,10 +232,10 @@ jobs:
       # to consume. For more details, review the image signing section of the README.
       - name: Install Cosign
         uses: sigstore/cosign-installer@d58896d6a1865668819e1d91763c7751a165e159 # v3.9.2
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION)
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
 
       - name: Sign container image
-        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION)
+        if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && (steps.check-tag.outputs.exists == 'false' || ${{ steps.tailscale-version.outputs.tag != env.TAILSCALE_VERSION }})
         run: |
           IMAGE_FULL="${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}"
           for tag in ${{ steps.metadata.outputs.tags }}; do
