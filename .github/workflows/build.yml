@@ -100,8 +100,9 @@ jobs:
         run: |
           echo "Latest Fedora CoreOS: ${{ env.SOURCE_IMAGE_VERSION }}"
           echo "Latest tailscale: ${{ steps.tailscale-version.outputs.tag }}"
-          echo "Image is latest Fedora CoreOS: ${{ steps.check-tag.outputs.exists }}"
           echo "Image tailscale: ${{ env.TAILSCALE_VERSION }}"
+          echo "Image is latest Fedora CoreOS: ${{ steps.check-tag.outputs.exists }}"
+          echo "Image is latest Tailscale: ${{ steps.tailscale-version.outputs.tag == env.TAILSCALE_VERSION }}"
       # These stage versions are pinned by https://github.com/renovatebot/renovate
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
